@@ -1,0 +1,34 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "shiftcast"
+version = "0.1.0"
+description = "Week-ahead taxi demand forecasts turned into a cost-minimal driver shift schedule"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "Ranjith Guggilla" }]
+dependencies = [
+  "numpy", "pandas", "scipy", "matplotlib", "statsforecast", "lightgbm",
+  "ortools", "holidays", "gradio",
+]
+
+[project.optional-dependencies]
+dev = ["pytest", "pytest-cov", "ruff"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 110
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+filterwarnings = ["ignore:The .generic. unit for NumPy timedelta:DeprecationWarning"]
