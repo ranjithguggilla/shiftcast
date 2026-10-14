@@ -1,0 +1,43 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt pytest pytest-cov ruff
+      - run: pip install -e . --no-deps
+      - name: Lint
+        run: |
+          ruff check src tests
+          ruff format --check src tests
+      - name: Tests
+        run: pytest -q --cov=shiftcast --cov-report=term-missing
+
+  build-artifact:
+    needs: test
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - run: pip install -e . --no-deps
+      - name: Run the full pipeline
+        run: python -m shiftcast.pipeline --out outputs --assets outputs/charts
+      - uses: actions/upload-artifact@v4
+        with:
+          name: shiftcast-results
+          path: outputs/
