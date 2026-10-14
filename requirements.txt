@@ -7,4 +7,4 @@ lightgbm==4.7.0
 ortools==9.15.6755
 holidays==0.106
 gradio==6.30.0
-scikit-learn==X.Y.Z
+scikit-learn==1.9.1
